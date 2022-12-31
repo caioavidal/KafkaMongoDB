@@ -31,7 +31,6 @@ namespace Producer
                 BootstrapServers = "localhost:9092"
             };
 
-
             var producerBuilder = new ProducerBuilder<string, Stock>(config);
             producerBuilder.SetLogHandler((_,_) => { });
       

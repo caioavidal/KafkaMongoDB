@@ -21,7 +21,6 @@ namespace Consumer
                 BootstrapServers = "localhost:9092",
                 GroupId = "dotnet-consumer-group",
                 AutoOffsetReset = AutoOffsetReset.Earliest,
-                EnableAutoCommit = true
             };
 
             var cancelled = false;
