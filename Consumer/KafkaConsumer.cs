@@ -1,6 +1,7 @@
 ﻿using Confluent.Kafka;
 using Newtonsoft.Json;
 using Persistence;
+using Producer;
 
 namespace Consumer
 {
@@ -26,14 +27,17 @@ namespace Consumer
             var cancelled = false;
             var cancellationToken = new CancellationTokenSource();
 
-            using (var consumer = new ConsumerBuilder<Ignore, string>(config).Build())
+            var consumerBuilder = new ConsumerBuilder<Ignore, Stock>(config);
+            consumerBuilder.SetValueDeserializer(new KafkaDeserializer<Stock>());
+
+            using (var consumer = consumerBuilder.Build())
             {
                 consumer.Subscribe("stocks");
 
                 while (!cancelled)
                 {
                     var consumeResult = consumer.Consume(cancellationToken.Token);
-                    var stock = JsonConvert.DeserializeObject<Stock>(consumeResult.Message.Value);
+                    var stock = consumeResult.Message.Value;
 
                     await stockRepository.InsertOneAsync(stock);
 
